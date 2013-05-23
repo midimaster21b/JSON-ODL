@@ -1,0 +1,8 @@
+# Compiled python
+*.pyc
+
+# Test output file
+testing.py
+
+# Log file
+log.txt
