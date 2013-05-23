@@ -1,0 +1,11 @@
+import constants
+
+{"classes": {"item": {"attributes": {"name": {"optional": false, "default": null, "display_type": constants.short_text},
+				     "description": {"optional": false, "default": null, "display_type": constants.long_text}},
+		      "methods": {"save": {"args": {"connection": {"arg_type": "positional", "optional": false, "datatype": "MySQLConnection"}},
+					   "return_value": false,
+					   "description": "Saves an Item to the underlying storage system."}
+				 }
+		     }
+	    }
+}
