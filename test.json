@@ -1,7 +1,8 @@
-{"classes": {"item": {"attributes": { "required": {"name": {"default": null, "display_type": "short_text"},
-						   "description": {"default": null, "display_type": "long_text"}},
-				      "optional": {}}
-		      "methods": {"save": {"args": {"connection": {"arg_type": "positional", "optional": false, "datatype": "MySQLConnection"}},
+{"classes": {"item": {"attributes": {"required": {"name": {"default": null, "display_type": "short_text"},
+						  "description": {"default": null, "display_type": "long_text"}},
+				     "optional": {}}
+		      "methods": {"save": {"args": {"required": {"connection": {"datatype": "MySQLConnection"}},
+						    "optional": {}},
 					   "return_value": false,
 					   "description": "Saves an Item to the underlying storage system."}
 				 }
