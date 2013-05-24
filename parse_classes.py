@@ -49,7 +49,7 @@ class CodeGenerator:
                 if name.startswith(constants.method_generator_prefix) \
                         and name != 'generate_code' \
                         and name != 'generate_template':
-                    methods.append(method(self, self.json_obj['classes'][obj_class]['attributes']))
+                    methods.append(method(self, self.json_obj['classes'][obj_class]['attributes'], class_name=obj_class))
 
             self.log('Generating user-defined methods for: {0}'.format(obj_class))
 
@@ -70,10 +70,20 @@ class CodeGenerator:
         return retval
 
     # All-Class Methods (Methods generated for every class)
-    def generate_init(self, attributes):
+    # Generate __init__
+    def generate_init(self, attributes, **kwargs):
         retval = "def __init__(self, {method_args}, **kwargs):\n".format(
             method_args=", ".join(attributes['required']))
         for attribute in attributes['required']:
             retval += "    self.{0} = {0}\n".format(attribute)
+
+        return retval
+
+    # Generate __repr__
+    def generate_repr(self, attributes, **kwargs):
+        retval = """def __repr__(self):
+    return '{class_name}(self.{required_attributes})'\n""".format(
+            class_name=kwargs['class_name'] if 'class_name' in kwargs else '',
+            required_attributes=", self.".join(attributes['required']))
 
         return retval
