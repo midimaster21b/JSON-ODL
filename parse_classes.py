@@ -17,6 +17,7 @@ class CodeGenerator:
         self.json_filename = json_filename
         self.output_filename = output_filename
         self.json_obj = None
+        self.classes = []
         if 'log_handle' in kwargs:
             self.log_handle = kwargs['log_handle']
         else:
@@ -32,34 +33,43 @@ class CodeGenerator:
         if self.log_handle is not None:
             self.log_handle.log(message)
 
+    def write_output(self):
+        output_file = open(self.output_filename, 'w')
+        for classe in self.classes:
+            output_file.write(repr(classe))
+        output_file.close()
+
     # Required Generator
     def generate_code(self):
-        methods = []
-
         if self.json_obj is None:
             raise NoClassException('No classes found.')
 
-        for obj_class in self.json_obj['classes']:
+        for count, obj_class in enumerate(self.json_obj['classes']):
             self.log('Generating all-class methods for: {0}'.format(obj_class))
+            self.classes.append(Class(obj_class))
 
-            # For all methods with the prefix constants.method_generator_prefix
+            # All methods with the prefix constants.method_generator_prefix
             # should be executed and sent a dictionary containing the object's
             # attributes
-            for name, method in inspect.getmembers(sys.modules[__name__].CodeGenerator, inspect.ismethod):
+            for name, method in \
+                    inspect.getmembers(sys.modules[__name__].CodeGenerator,
+                                       inspect.ismethod):
                 if name.startswith(constants.method_generator_prefix) \
                         and name != 'generate_code' \
                         and name != 'generate_template':
-                    methods.append(method(self, self.json_obj['classes'][obj_class]['attributes'], class_name=obj_class))
+                    self.classes[count].add_method(
+                        method(self,
+                               self.json_obj['classes'][obj_class]['attributes'],
+                               class_name=obj_class))
 
             self.log('Generating user-defined methods for: {0}'.format(obj_class))
 
             # Generate the template code for all methods defined in the json file
             for method_name in self.json_obj['classes'][obj_class]['methods']:
-                methods.append(self.generate_template(method_name, self.json_obj['classes'][obj_class]['methods'][method_name]))
-
-            # Print output to screen for testing
-            for method in methods:
-                print method
+                self.classes[count].add_method(
+                    self.generate_template(
+                        method_name,
+                        self.json_obj['classes'][obj_class]['methods'][method_name]))
 
     # Required Generator (Generates templates for all methods specified in json)
     def generate_template(self, method_name, method_properties):
@@ -87,3 +97,19 @@ class CodeGenerator:
             required_attributes=", self.".join(attributes['required']))
 
         return retval
+
+class Class:
+    def __init__(self, name):
+        self.name = name
+        self.methods = []
+
+    def add_method(self, method):
+        self.methods.append(method)
+
+    def __repr__(self):
+        retval = ("class {class_name}:\n" + 4 * ' ').format(class_name=self.name)
+        for method in self.methods:
+            method += "\n"
+            retval += method.replace('\n', '\n' + 4 * ' ')
+
+        return retval +  "\n"
