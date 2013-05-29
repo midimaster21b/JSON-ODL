@@ -1,6 +1,9 @@
 # Compiled python
 *.pyc
 
+# Emacs stuff
+.emacs*
+
 # Test output file
 testing.py
 
