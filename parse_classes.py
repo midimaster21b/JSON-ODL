@@ -57,7 +57,7 @@ class CodeGenerator:
                 if name.startswith(constants.method_generator_prefix) \
                         and name != 'generate_code' \
                         and name != 'generate_template':
-                    self.classes[count].add_method(
+                    self.classes[count].add_method_code(
                         method(self,
                                self.json_obj['classes'][obj_class]['attributes'],
                                class_name=obj_class))
@@ -66,7 +66,7 @@ class CodeGenerator:
 
             # Generate the template code for all methods defined in the json file
             for method_name in self.json_obj['classes'][obj_class]['methods']:
-                self.classes[count].add_method(
+                self.classes[count].add_method_code(
                     self.generate_template(
                         method_name,
                         self.json_obj['classes'][obj_class]['methods'][method_name]))
@@ -99,12 +99,13 @@ class CodeGenerator:
 
         return retval
 
+
 class Class:
     def __init__(self, name):
         self.name = name
         self.methods = []
 
-    def add_method(self, method):
+    def add_method_code(self, method):
         self.methods.append(method)
 
     def __repr__(self):
