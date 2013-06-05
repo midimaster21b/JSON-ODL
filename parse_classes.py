@@ -51,9 +51,9 @@ class CodeGenerator:
             # All methods with the prefix constants.method_generator_prefix
             # should be executed and sent a dictionary containing the object's
             # attributes
-            for name, method in \
-                    inspect.getmembers(sys.modules[__name__].CodeGenerator,
-                                       inspect.ismethod):
+            for name, method in inspect.getmembers(
+                sys.modules[__name__].CodeGenerator,
+                inspect.ismethod):
                 if name.startswith(constants.method_generator_prefix) \
                         and name != 'generate_code' \
                         and name != 'generate_template':
@@ -71,9 +71,10 @@ class CodeGenerator:
                         method_name,
                         self.json_obj['classes'][obj_class]['methods'][method_name]))
 
-    # Required Generator (Generates templates for all methods specified in json)
+    # Required Generator (Generates templates for all methods specified in json model description)
     def generate_template(self, method_name, method_properties):
-        retval = "def {method_name}(self, {method_args}, **kwargs):\n    pass".format(
+        retval = """def {method_name}(self, {method_args}, **kwargs):
+    pass""".format(
             method_name=method_name,
             method_args=", ".join(method_properties['args']['required']))
 
