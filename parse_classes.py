@@ -93,9 +93,9 @@ class CodeGenerator:
     # Generate __repr__
     def generate_repr(self, attributes, **kwargs):
         retval = """def __repr__(self):
-    return '{class_name}(self.{required_attributes})'\n""".format(
-            class_name=kwargs['class_name'] if 'class_name' in kwargs else '',
-            required_attributes=", self.".join(attributes['required']))
+    return '{class_name}(""".format(class_name=kwargs['class_name'] if 'class_name' in kwargs else '')
+        retval += "({" + "}, {".join(str(x) for x in range(0, len(attributes['required']))) + "})'.format(self."
+        retval += ", self.".join(attributes['required']) + ")\n"
 
         return retval
 
