@@ -74,6 +74,7 @@ class CodeGenerator:
             # Generate code for additional methods defined in constants file
             for module in constants.additional_method_modules:
                 try:
+                    __import__(module)
                     self.log('Generating additional methods defined in {0} for {1}'.format(
                             module,
                             obj_class))
@@ -87,7 +88,10 @@ class CodeGenerator:
                                     self.json_obj['classes'][obj_class]['attributes']))
 
                 except KeyError:
-                    self.log('Could not find module {0}'.format(module))
+                    self.log('Could not find module {0} within sys.modules'.format(module))
+
+                except ImportError:
+                    self.log('Could not import module {0}'.format(module))
 
             self.log("Finished generating methods for {0}\n\n".format(obj_class))
 
