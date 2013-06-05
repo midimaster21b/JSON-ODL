@@ -39,13 +39,13 @@ class CodeGenerator:
             output_file.write(repr(classe))
         output_file.close()
 
-    # Required Generator
+    # Required Generator (Entry Point)
     def generate_code(self):
         if self.json_obj is None:
             raise NoClassException('No classes found.')
 
         for count, obj_class in enumerate(self.json_obj['classes']):
-            self.log('Generating all-class methods for: {0}'.format(obj_class))
+            self.log('Generating all-class methods for {0}'.format(obj_class))
             self.classes.append(Class(obj_class))
 
             # All methods with the prefix constants.method_generator_prefix
@@ -62,7 +62,7 @@ class CodeGenerator:
                                self.json_obj['classes'][obj_class]['attributes'],
                                class_name=obj_class))
 
-            self.log('Generating user-defined methods for: {0}'.format(obj_class))
+            self.log('Generating user-defined methods for {0}'.format(obj_class))
 
             # Generate the template code for all methods defined in the json file
             for method_name in self.json_obj['classes'][obj_class]['methods']:
@@ -71,10 +71,30 @@ class CodeGenerator:
                         method_name,
                         self.json_obj['classes'][obj_class]['methods'][method_name]))
 
+            # Generate code for additional methods defined in constants file
+            for module in constants.additional_method_modules:
+                try:
+                    self.log('Generating additional methods defined in {0} for {1}'.format(
+                            module,
+                            obj_class))
+
+                    for name, method in inspect.getmembers(
+                        sys.modules[module],
+                        inspect.isfunction): # MUST BE inspect.isfunction
+                        if name.startswith(constants.method_generator_prefix):
+                            self.classes[count].add_method_code(
+                                method(
+                                    self.json_obj['classes'][obj_class]['attributes']))
+
+                except KeyError:
+                    self.log('Could not find module {0}'.format(module))
+
+            self.log("Finished generating methods for {0}\n\n".format(obj_class))
+
     # Required Generator (Generates templates for all methods specified in json model description)
     def generate_template(self, method_name, method_properties):
         retval = """def {method_name}(self, {method_args}, **kwargs):
-    pass""".format(
+    pass\n""".format(
             method_name=method_name,
             method_args=", ".join(method_properties['args']['required']))
 
