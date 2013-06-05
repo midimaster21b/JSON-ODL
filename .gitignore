@@ -4,8 +4,8 @@
 # Emacs stuff
 .emacs*
 
-# Test output file
-testing.py
+# Test files
+test*
 
 # Log file
 log.txt
