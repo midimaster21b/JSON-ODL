@@ -54,6 +54,13 @@ class CodeGenerator:
                     e.errno, e.strerror))
 
     def log(self, message):
+        """
+        Add an entry to the log.
+
+        :param message: Message to be added to the log
+        :type message: :class:`str`
+
+        """
         if self.log_handle is not None:
             self.log_handle.log(message)
 
