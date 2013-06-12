@@ -84,8 +84,8 @@ class CodeGenerator:
                         inspect.isfunction): # MUST BE inspect.isfunction
                         if name.startswith(constants.method_generator_prefix):
                             self.classes[count].add_method_code(
-                                method(
-                                    self.json_obj['classes'][obj_class]['attributes']))
+                                method(obj_class,
+                                       self.json_obj['classes'][obj_class]['attributes']))
 
                 except KeyError:
                     self.log('Could not find module {0} within sys.modules'.format(module))
