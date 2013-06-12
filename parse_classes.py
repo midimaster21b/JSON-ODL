@@ -64,10 +64,11 @@ class CodeGenerator:
         if self.log_handle is not None:
             self.log_handle.log(message)
 
-    def write_output(self):
+    def save_generated_source_code(self):
+        """Save generated code to output file."""
         output_file = open(self.output_filename, 'w')
-        for classe in self.classes:
-            output_file.write(repr(classe))
+        for generated_class in self.classes:
+            output_file.write(repr(generated_class))
         output_file.close()
 
     def generate_code(self):
