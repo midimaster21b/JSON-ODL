@@ -22,25 +22,22 @@ class FileAccessException(Exception):
 
 
 class CodeGenerator:
-    def __init__(self, json_filename, output_filename, log_handle):
+    def __init__(self, logger=None):
         """
         Initializes CodeGenerator to a usable state.
 
-        :param json_filename: JSON source filename for source code generation
-        :type json_filename: :class:`str`
-        :param output_filename: Filename of file to write generated source code
-        :type output_filename: :class:`str`
-        :param log_handle: Logger handle
-        :type log_handle: :class:`Logger`
+        :param logger: Logger handle
+        :type logger: :class:`Logger`
         :raises FileAccessException: Raised when there is an issue accessing
         the JSON source file
 
         """
-        self.json_filename = json_filename
-        self.output_filename = output_filename
         self.json_obj = None
         self.classes = []
-        self.log_handle = log_handle
+        if logger is not None:
+            self._logger = logger
+        else:
+            self._logger = Logger(constants.default_logger_filename)
 
         # Parse JSON file. Should't be separated from constructor
         # due to possible concurrency issues.
@@ -61,8 +58,8 @@ class CodeGenerator:
         :type message: :class:`str`
 
         """
-        if self.log_handle is not None:
-            self.log_handle.log(message)
+        if self._logger is not None:
+            self._loggger.log(message)
 
     def save_generated_source_code(self):
         """Save generated code to output file."""
