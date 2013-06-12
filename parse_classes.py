@@ -12,16 +12,13 @@ class NoClassException(Exception):
         return self.message
 
 class CodeGenerator:
-    def __init__(self, json_filename='test.json', output_filename='test.py',
-                 **kwargs):
+    def __init__(self, json_filename, output_filename, log_handle):
         self.json_filename = json_filename
         self.output_filename = output_filename
         self.json_obj = None
         self.classes = []
-        if 'log_handle' in kwargs:
-            self.log_handle = kwargs['log_handle']
-        else:
-            self.log_handle = None
+        self.log_handle = log_handle
+
         self.parse_json()
 
     def parse_json(self):
