@@ -4,6 +4,7 @@ import json
 import constants
 from logger import Logger
 
+
 class NoClassException(Exception):
     def __init__(self, message):
         self.message = message
@@ -11,17 +12,28 @@ class NoClassException(Exception):
     def __repr__(self):
         return self.message
 
+
+class FileAccessException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __repr__(self):
+        return self.message
+
+
 class CodeGenerator:
     def __init__(self, json_filename, output_filename, log_handle):
         """
         Initializes CodeGenerator to a usable state.
 
         :param json_filename: JSON source filename for source code generation
-        :type json_filename: str
+        :type json_filename: :class:`str`
         :param output_filename: Filename of file to write generated source code
-        :type output_filename: str
+        :type output_filename: :class:`str`
         :param log_handle: Logger handle
-        :type log_handle: :class Logger:
+        :type log_handle: :class:`Logger`
+        :raises FileAccessException: Raised when there is an issue accessing
+        the JSON source file
 
         """
         self.json_filename = json_filename
@@ -30,12 +42,16 @@ class CodeGenerator:
         self.classes = []
         self.log_handle = log_handle
 
-        self.parse_json()
-
-    def parse_json(self):
-        json_file = open(self.json_filename, 'r')
-        self.json_obj = json.loads(json_file.read())
-        json_file.close()
+        # Parse JSON file. Should't be separated from constructor
+        # due to possible concurrency issues.
+        try:
+            json_file = open(self.json_filename, 'r')
+            self.json_obj = json.loads(json_file.read())
+            json_file.close()
+        except IOError as e:
+            raise FileAccessException(
+                "Couldn't access JSON source file: {0} - {1}".format(
+                    e.errno, e.strerror))
 
     def log(self, message):
         if self.log_handle is not None:
