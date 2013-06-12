@@ -13,6 +13,17 @@ class NoClassException(Exception):
 
 class CodeGenerator:
     def __init__(self, json_filename, output_filename, log_handle):
+        """
+        Initializes CodeGenerator to a usable state.
+
+        :param json_filename: JSON source filename for source code generation
+        :type json_filename: str
+        :param output_filename: Filename of file to write generated source code
+        :type output_filename: str
+        :param log_handle: Logger handle
+        :type log_handle: :class Logger:
+
+        """
         self.json_filename = json_filename
         self.output_filename = output_filename
         self.json_obj = None
