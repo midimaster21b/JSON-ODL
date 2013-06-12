@@ -39,8 +39,8 @@ class CodeGenerator:
             output_file.write(repr(classe))
         output_file.close()
 
-    # Required Generator (Entry Point)
     def generate_code(self):
+        """Entry point for code generation."""
         if self.json_obj is None:
             raise NoClassException('No classes found.')
 
@@ -95,8 +95,10 @@ class CodeGenerator:
 
             self.log("Finished generating methods for {0}\n\n".format(obj_class))
 
-    # Required Generator (Generates templates for all methods specified in json model description)
     def generate_template(self, method_name, method_properties):
+        """Generate templates for all methods specified in json model description.
+
+        This method is required."""
         retval = """def {method_name}(self, {method_args}, **kwargs):
     pass\n""".format(
             method_name=method_name,
@@ -105,8 +107,8 @@ class CodeGenerator:
         return retval
 
     # All-Class Methods (Methods generated for every class)
-    # Generate __init__
     def generate_init(self, attributes, **kwargs):
+        """Generate __init__ method."""
         retval = "def __init__(self, {method_args}, **kwargs):\n".format(
             method_args=", ".join(attributes['required']))
         for attribute in attributes['required']:
@@ -114,8 +116,8 @@ class CodeGenerator:
 
         return retval
 
-    # Generate __repr__
     def generate_repr(self, attributes, **kwargs):
+        """Generate __repr__ method."""
         retval = """def __repr__(self):
     return '{class_name}(""".format(class_name=kwargs['class_name'] if 'class_name' in kwargs else '')
         retval += "({" + "}, {".join(str(x) for x in range(0, len(attributes['required']))) + "})'.format(self."
