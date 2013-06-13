@@ -30,7 +30,6 @@ class CodeGenerator:
         :type logger: :class:`Logger`
 
         """
-        self.json_obj = None
         self.classes = []
         if logger is not None:
             self._logger = logger
@@ -46,16 +45,22 @@ class CodeGenerator:
 
         """
         if self._logger is not None:
-            self._loggger.log(message)
+            self._logger.log(message)
 
-    def save_generated_source_code(self):
-        """Save generated code to output file."""
-        output_file = open(self.output_filename, 'w')
+    def save_generated_source_code(self, filename):
+        """
+        Save generated source code to output file.
+
+        :param filename: Name of file to write source code
+        :type filename: :class:`str`
+
+        """
+        output_file = open(filename, 'w')
         for generated_class in self.classes:
-            output_file.write(repr(generated_class))
+            output_file.write(str(generated_class))
         output_file.close()
 
-    def generate_code(self):
+    def generate_code(self, JSON):
         """Entry point for code generation."""
         if self.json_obj is None:
             raise NoClassException('No classes found.')
