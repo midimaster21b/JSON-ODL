@@ -28,8 +28,6 @@ class CodeGenerator:
 
         :param logger: Logger handle
         :type logger: :class:`Logger`
-        :raises FileAccessException: Raised when there is an issue accessing
-        the JSON source file
 
         """
         self.json_obj = None
