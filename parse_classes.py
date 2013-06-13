@@ -46,6 +46,21 @@ class CodeGenerator:
             output_file.write(str(generated_class))
         output_file.close()
 
+    def parse_to_objects(self, JSON):
+        """
+        Parse json and generate Class classes.
+
+        :param JSON: JSON to be parsed
+        :type JSON: :class:`str`
+        :return: Dictionary of Class classes
+        :rtype: :class:`dictionary` of :class:`Class`
+
+        """
+        json_obj = json.loads(JSON)
+        for classname in json_obj['classes']:
+            json_obj['classes'][classname]
+
+
     def generate_code(self, JSON):
         """
         Entry point for code generation.
