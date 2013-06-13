@@ -39,17 +39,6 @@ class CodeGenerator:
         else:
             self._logger = Logger(constants.default_logger_filename)
 
-        # Parse JSON file. Should't be separated from constructor
-        # due to possible concurrency issues.
-        try:
-            json_file = open(self.json_filename, 'r')
-            self.json_obj = json.loads(json_file.read())
-            json_file.close()
-        except IOError as e:
-            raise FileAccessException(
-                "Couldn't access JSON source file: {0} - {1}".format(
-                    e.errno, e.strerror))
-
     def log(self, message):
         """
         Add an entry to the log.
