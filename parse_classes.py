@@ -1,24 +1,10 @@
 import sys
 import inspect
 import json
+
 import constants
 from logger import Logger
-
-
-class NoClassException(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __repr__(self):
-        return self.message
-
-
-class FileAccessException(Exception):
-    def __init__(self, message):
-        self.message = message
-
-    def __repr__(self):
-        return self.message
+from interfaces import Class, Method, Property
 
 
 class CodeGenerator:
@@ -61,9 +47,13 @@ class CodeGenerator:
         output_file.close()
 
     def generate_code(self, JSON):
-        """Entry point for code generation."""
-        if self.json_obj is None:
-            raise NoClassException('No classes found.')
+        """
+        Entry point for code generation.
+
+        :param JSON: JSON to be parsed
+        :type JSON: :class:`str`
+
+        """
 
         for count, obj_class in enumerate(self.json_obj['classes']):
             self.log('Generating all-class methods for {0}'.format(obj_class))
@@ -145,20 +135,3 @@ class CodeGenerator:
         retval += ", self.".join(attributes['required']) + ")\n"
 
         return retval
-
-
-class Class:
-    def __init__(self, name):
-        self.name = name
-        self.methods = []
-
-    def add_method_code(self, method):
-        self.methods.append(method)
-
-    def __repr__(self):
-        retval = ("class {class_name}:\n" + 4 * ' ').format(class_name=self.name)
-        for method in self.methods:
-            method += "\n"
-            retval += method.replace('\n', '\n' + 4 * ' ')
-
-        return retval +  "\n"
