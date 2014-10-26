@@ -74,19 +74,6 @@ class CodeGenerator:
             self.log('Generating all-class methods for {0}'.format(obj_class))
             self.classes.append(Class(obj_class))
 
-            # All methods with the prefix constants.method_generator_prefix
-            # should be executed and sent a dictionary containing the object's
-            # attributes
-            for name, method in inspect.getmembers(
-                sys.modules[__name__].CodeGenerator,
-                inspect.ismethod):
-                if name.startswith(constants.method_generator_prefix) \
-                        and name != 'generate_code' \
-                        and name != 'generate_template':
-                    self.classes[count].add_method_code(
-                        method(self,
-                               self.json_obj['classes'][obj_class]['attributes'],
-                               class_name=obj_class))
 
             self.log('Generating user-defined methods for {0}'.format(obj_class))
 
@@ -120,6 +107,30 @@ class CodeGenerator:
                     self.log('Could not import module {0}'.format(module))
 
             self.log("Finished generating methods for {0}\n\n".format(obj_class))
+
+    # NOT FINISHED YET!!!
+    def inspect_immediate_module(class_object, method_prefix):
+        """
+        Find and execute all methods with the prefix method_generator_prefix
+        (as defined in the file constants.py) and send a dictionary containing
+        the object's attributes.
+
+        :param class_object: Class object containing all the class info
+        :type class_object: :class:`Class`
+        :param json_obj: Object containing all json to be used
+
+        """
+        for name, method in inspect.getmembers(
+            sys.modules[__name__].CodeGenerator,
+            inspect.ismethod):
+            if name.startswith(method_prefix) \
+                    and name != 'generate_code' \
+                    and name != 'generate_template':
+                self.classes[count].add_method_code(
+                    method(self,
+                           self.json_obj['classes'][obj_class]['attributes'],
+                           class_name=obj_class))
+
 
     def generate_template(self, method_name, method_properties):
         """Generate templates for all methods specified in json model description.
